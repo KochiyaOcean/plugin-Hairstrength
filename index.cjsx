@@ -146,7 +146,16 @@ module.exports =
 
 
     componentDidMount: ->
-      window.addEventListener 'game.response', @handleResponse
+      if window._nickName? && window._nickNameId? && window._teitokuExp?
+        @tutuInitial window._nickNameId, window._nickName, window._teitokuExp
+      else
+        window.addEventListener 'game.response', @handleResponse
+
+    componentWillUnmount: ->
+      if !@state.tutuInitialed
+        window.removeEventListener @handleResponse
+      else if !@state.isUpdated
+        window.removeEventListener @handleRefreshList
 
     handleResponse: (e) ->
       {path, body} = e.detail
